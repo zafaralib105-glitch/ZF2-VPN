@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZF2 VPN Panel Demo</title>
+<style>
+:root{--bg:#0b1220;--card:#121d31;--line:#263650;--blue:#2878ff;--green:#12b981;--text:#edf4ff;--muted:#9eb0ca;--red:#ef5350}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#08101d,#101d33);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{padding:22px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-weight:800;font-size:22px}.brand span{color:#55a0ff}.tag{color:var(--muted);font-size:12px}
+main{max-width:1000px;margin:22px auto;padding:0 14px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+button,.tab{border:0;border-radius:10px;padding:11px 15px;background:#20304a;color:var(--text);font-weight:700;cursor:pointer}
+button.primary,.tab.active{background:var(--blue)}button.good{background:#087f5b}button.danger{background:#8d2e39}
+.panel{background:rgba(18,29,49,.96);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 12px 30px #0002}
+h1{font-size:23px;margin:0 0 5px}h2{font-size:17px;margin:0 0 14px}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.stat{background:#0c1729;border:1px solid var(--line);padding:15px;border-radius:12px}.num{font-size:25px;font-weight:800;margin-top:5px}
+label{display:block;color:var(--muted);font-size:13px;margin:10px 0 5px}input,select{width:100%;padding:12px;border-radius:9px;border:1px solid #354968;background:#091323;color:var(--text);font:inherit}
+form .grid{gap:10px}form button{margin-top:14px;width:100%}
+.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:560px}th,td{text-align:left;padding:11px;border-bottom:1px solid var(--line);font-size:13px}th{color:var(--muted)}
+.pill{padding:4px 8px;border-radius:30px;background:#0d503f;color:#7ff0c5;font-size:12px}.pill.off{background:#54252c;color:#ffb7bd}
+.notice{font-size:13px;line-height:1.5;color:#c1d0e6;background:#0a1728;border:1px solid var(--line);padding:12px;border-radius:10px}
+.hidden{display:none}.foot{text-align:center;color:var(--muted);font-size:12px;padding:16px}
+@media(max-width:520px){header{align-items:flex-start}.panel{padding:14px}h1{font-size:21px}}
+</style>
+</head>
+<body>
+<header><div><div class="brand"><span>◆</span> ZF2 VPN</div><div class="tag">Subscription panel — demo prototype</div></div><div class="tag">Local demo only</div></header>
+<main>
+<div class="tabs">
+<button class="tab active" data-tab="admin">Admin Demo</button>
+<button class="tab" data-tab="customer">Customer View</button>
+</div>
+<section id="admin">
+<div class="panel"><h1>Admin Dashboard</h1><div class="muted">Manage sample accounts and subscription periods.</div></div>
+<div class="grid">
+<div class="stat"><div class="muted">Total accounts</div><div class="num" id="total">2</div></div>
+<div class="stat"><div class="muted">Active accounts</div><div class="num" id="active">2</div></div>
+<div class="stat"><div class="muted">Expired / disabled</div><div class="num" id="expired">0</div></div>
+</div>
+<div class="panel" style="margin-top:16px"><h2>Create customer account</h2>
+<form id="createForm">
+<div class="grid">
+<div><label for="username">Username</label><input id="username" required maxlength="32" placeholder="e.g. customer001" autocomplete="off"></div>
+<div><label for="password">Password</label><input id="password" required minlength="4" placeholder="Set a demo password" autocomplete="new-password"></div>
+<div><label for="duration">Package duration</label><select id="duration"><option value="7">7 days</option><option value="15">15 days</option><option value="30" selected>30 days</option><option value="90">90 days</option></select></div>
+<div><label for="limit">Data limit</label><select id="limit"><option>5 GB</option><option>15 GB</option><option selected>50 GB</option><option>100 GB</option><option>Unlimited (demo only)</option></select></div>
+</div><button class="primary" type="submit">Create demo account</button>
+</form>
+<p class="notice">Important: this page is a front-end demo. Accounts are stored only in this browser session and passwords are not sent to a secure server. Do not use real passwords or sell access using this demo.</p>
+</div>
+<div class="panel"><h2>Accounts</h2><div class="tablewrap"><table><thead><tr><th>Username</th><th>Package</th><th>Expiry</th><th>Data limit</th><th>Status</th><th>Action</th></tr></thead><tbody id="accounts"></tbody></table></div></div>
+</section>
+<section id="customer" class="hidden">
+<div class="panel"><h1>Customer Panel</h1><p class="muted">Sample customer subscription view.</p>
+<label for="customerSelect">Choose a demo account</label><select id="customerSelect"></select>
+<div class="grid" style="margin-top:14px">
+<div class="stat"><div class="muted">Username</div><div class="num" style="font-size:20px" id="cUser">saudi001</div></div>
+<div class="stat"><div class="muted">Package</div><div class="num" style="font-size:20px" id="cPackage">30 days</div></div>
+<div class="stat"><div class="muted">Expires</div><div class="num" style="font-size:18px" id="cExpiry">—</div></div>
+</div>
+<p class="notice" style="margin-top:14px">This demo does not create a real VPN connection. A production system needs a secure backend, a VPN server, protected admin login, and server-side expiry/data enforcement.</p>
+</div>
+</section>
+<div class="foot">ZF2 VPN • Demonstration only • No real VPN tunnel or payment processing</div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+let users=[
+ {username:"saudi001",password:"demo-only",days:30,limit:"50 GB",created:Date.now(),disabled:false},
+ {username:"saudi002",password:"demo-only",days:7,limit:"5 GB",created:Date.now(),disabled:false}
+];
+function expiry(u){return new Date(u.created+u.days*86400000)}
+function expired(u){return u.disabled||Date.now()>expiry(u).getTime()}
+function date(d){return d.toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"})}
+function render(){
+ $("accounts").innerHTML="";
+ users.forEach((u,i)=>{
+  const tr=document.createElement("tr");
+  const status=expired(u)?"Expired/disabled":"Active";
+  tr.innerHTML=`<td>${esc(u.username)}</td><td>${u.days} days</td><td>${date(expiry(u))}</td><td>${esc(u.limit)}</td><td><span class="pill ${expired(u)?"off":""}">${status}</span></td><td><button class="${u.disabled?"good":"danger"}" data-action="${u.disabled?"enable":"disable"}" data-i="${i}">${u.disabled?"Enable":"Disable"}</button></td>`;
+  $("accounts").appendChild(tr);
+ });
+ $("total").textContent=users.length;
+ $("active").textContent=users.filter(u=>!expired(u)).length;
+ $("expired").textContent=users.filter(expired).length;
+ const sel=$("customerSelect"),old=sel.value;sel.innerHTML="";
+ users.forEach(u=>{let o=document.createElement("option");o.value=u.username;o.textContent=u.username;sel.appendChild(o)});
+ if(users.some(u=>u.username===old))sel.value=old;
+ updateCustomer();
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+$("createForm").addEventListener("submit",e=>{
+ e.preventDefault();const username=$("username").value.trim(),password=$("password").value;
+ if(users.some(u=>u.username.toLowerCase()===username.toLowerCase())){alert("That username already exists.");return}
+ users.push({username,password,days:Number($("duration").value),limit:$("limit").value,created:Date.now(),disabled:false});
+ $("createForm").reset();$("duration").value="30";$("limit").value="50 GB";render();alert("Demo account created in this page session.");
+});
+$("accounts").addEventListener("click",e=>{const b=e.target.closest("button[data-action]");if(!b)return;const u=users[Number(b.dataset.i)];u.disabled=b.dataset.action==="disable";render()});
+function updateCustomer(){const u=users.find(x=>x.username===$("customerSelect").value)||users[0];if(!u)return;$("cUser").textContent=u.username;$("cPackage").textContent=u.days+" days";$("cExpiry").textContent=date(expiry(u));}
+$("customerSelect").addEventListener("change",updateCustomer);
+document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x===b));$("admin").classList.toggle("hidden",b.dataset.tab!=="admin");$("customer").classList.toggle("hidden",b.dataset.tab!=="customer")}));
+render();
+</script>
+</body></html>
